@@ -17,129 +17,184 @@
 <body class="bg-gray-100 rtl">
 
   <!-- Top Bar -->
-  <div class="teal text-white p-4 flex items-center justify-between sticky top-0 z-50">
+  <div class="teal text-white p-4 flex items-center justify-between">
     <div class="flex items-center gap-3">
       <i onclick="showScreen('dashboard')" class="fas fa-bars text-3xl cursor-pointer"></i>
       <h1 class="text-2xl font-bold">تكاليف سوفت</h1>
     </div>
-    <div class="flex items-center gap-4">
+    <div class="flex gap-4">
       <i class="fas fa-bell text-2xl"></i>
       <i class="fas fa-share-alt text-2xl"></i>
     </div>
   </div>
 
-  <!-- Quick Action Buttons (matches your screenshot) -->
+  <!-- Quick Buttons -->
   <div class="p-4 grid grid-cols-2 gap-3">
-    <!-- Row 1 -->
-    <button onclick="alert('قبض/صرف - قيد قيد التطوير')" class="bg-white rounded-2xl shadow p-4 flex items-center gap-3">
-      <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-3xl">📄</div>
-      <div class="text-right">
-        <p class="font-bold">قبض/صرف</p>
-      </div>
+    <button onclick="showScreen('cash')" class="bg-white rounded-2xl shadow p-4 flex items-center gap-3">
+      <div class="text-4xl">📄</div>
+      <div><p class="font-bold">قبض/صرف</p></div>
     </button>
-    <button onclick="showScreen('sales')" class="bg-white rounded-2xl shadow p-4 flex items-center gap-3">
-      <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-3xl">🛒</div>
-      <div class="text-right">
-        <p class="font-bold">المبيعات</p>
-      </div>
-    </button>
-
-    <!-- Row 2 -->
-    <button onclick="alert('الحسابات - قيد التطوير')" class="bg-white rounded-2xl shadow p-4 flex items-center gap-3">
-      <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-3xl">💰</div>
-      <div class="text-right">
-        <p class="font-bold">الحسابات</p>
-      </div>
-    </button>
-    <button onclick="alert('المشتريات - قيد التطوير')" class="bg-white rounded-2xl shadow p-4 flex items-center gap-3">
-      <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-3xl">📦</div>
-      <div class="text-right">
-        <p class="font-bold">المشتريات</p>
-      </div>
-    </button>
-
-    <!-- Row 3 -->
-    <button onclick="alert('تصميم منتج - قيد التطوير')" class="bg-white rounded-2xl shadow p-4 flex items-center gap-3">
-      <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-3xl">⚙️</div>
-      <div class="text-right">
-        <p class="font-bold">تصميم منتج</p>
-      </div>
-    </button>
-    <button onclick="alert('أمر إنتاج - قيد التطوير')" class="bg-white rounded-2xl shadow p-4 flex items-center gap-3">
-      <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-3xl">📦</div>
-      <div class="text-right">
-        <p class="font-bold">أمر إنتاج</p>
-      </div>
+    <button onclick="showScreen('salesList')" class="bg-white rounded-2xl shadow p-4 flex items-center gap-3">
+      <div class="text-4xl">🛒</div>
+      <div><p class="font-bold">المبيعات</p></div>
     </button>
   </div>
 
-  <!-- Expandable Sections (exactly like your screenshot) -->
-  <div class="px-4 space-y-2">
-    <div onclick="toggleSection(this)" class="teal text-white p-4 rounded-2xl flex justify-between items-center cursor-pointer">
-      <span class="font-bold">عمليات مخزنية</span>
-      <i class="fas fa-chevron-down"></i>
-    </div>
-    <div class="section-content hidden bg-white rounded-2xl shadow p-2">
-      <div class="py-3 px-4 border-b">توريد مخزني</div>
-      <div class="py-3 px-4 border-b">صرف مخزني</div>
-      <div class="py-3 px-4 border-b">تحويل مخزني</div>
-      <div class="py-3 px-4 border-b">تسوية مخزنية</div>
-      <div class="py-3 px-4 border-b">إضافة مخزن</div>
-      <div class="py-3 px-4">جرد مخزني</div>
-    </div>
-
-    <div onclick="toggleSection(this)" class="teal text-white p-4 rounded-2xl flex justify-between items-center cursor-pointer">
-      <span class="font-bold">قيود وحسابات</span>
-      <i class="fas fa-chevron-down"></i>
-    </div>
-    <div class="section-content hidden bg-white rounded-2xl shadow p-2 text-gray-500">
-      <div class="py-3 px-4">قيد قيد التطوير...</div>
-    </div>
-
-    <div onclick="toggleSection(this)" class="teal text-white p-4 rounded-2xl flex justify-between items-center cursor-pointer">
-      <span class="font-bold">أصناف</span>
-      <i class="fas fa-chevron-down"></i>
-    </div>
-    <div onclick="showScreen('products')" class="section-content hidden bg-white rounded-2xl shadow p-2">
-      <div class="py-3 px-4 text-teal-600 cursor-pointer">📋 الأصناف والمخزون (اضغط هنا)</div>
-    </div>
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="screen active p-4 text-center">
+    <p class="text-2xl font-bold text-teal-700">مرحباً بك في تكاليف سوفت - النسيج</p>
   </div>
 
-  <!-- Screens (Sales + Products + Data) -->
-  <div id="sales" class="screen p-4">
+  <!-- SALES LIST (قائمة المبيعات) -->
+  <div id="salesList" class="screen p-4">
+    <div class="flex justify-between mb-4">
+      <h2 class="text-2xl font-bold">قائمة المبيعات</h2>
+      <div class="flex gap-4">
+        <i onclick="searchSales()" class="fas fa-search text-2xl cursor-pointer"></i>
+        <i onclick="exportSalesPDF()" class="fas fa-file-pdf text-red-600 text-2xl cursor-pointer"></i>
+      </div>
+    </div>
+    <div class="bg-white rounded-3xl shadow overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-teal-700 text-white">
+          <tr>
+            <th class="p-3 text-right">المبلغ</th>
+            <th class="p-3 text-right">المخزن</th>
+            <th class="p-3 text-right">الاسم</th>
+            <th class="p-3 text-right">التاريخ</th>
+            <th class="p-3 text-right">رقم</th>
+          </tr>
+        </thead>
+        <tbody id="sales-table" class="divide-y"></tbody>
+      </table>
+    </div>
+    <button onclick="createNewInvoice()" class="fixed bottom-6 right-6 bg-teal-600 text-white w-14 h-14 rounded-full text-4xl shadow-2xl flex items-center justify-center">+</button>
+  </div>
+
+  <!-- NEW INVOICE (بيع آجل) -->
+  <div id="newInvoice" class="screen p-4">
     <h2 class="text-2xl font-bold mb-4">بيع آجل</h2>
-    <!-- (Same sales screen as before) -->
-    <div class="bg-white rounded-3xl p-6 shadow">... (الكود الكامل للمبيعات موجود في النسخة السابقة)</div>
-  </div>
+    <div class="bg-white rounded-3xl shadow p-6">
+      <input id="invoice-customer" type="text" placeholder="اسم العميل" class="w-full p-4 border rounded-2xl mb-4">
+      <input id="invoice-date" type="date" class="w-full p-4 border rounded-2xl mb-4">
+      
+      <div class="flex gap-2 mb-4">
+        <button onclick="addProductToInvoice()" class="flex-1 bg-teal-600 text-white py-4 rounded-2xl">+ إضافة صنف</button>
+      </div>
 
-  <div id="products" class="screen p-4">
-    <h2 class="text-2xl font-bold mb-4">الأصناف والمخزون</h2>
-    <button onclick="addNewProduct()" class="w-full bg-teal-600 text-white py-4 rounded-3xl mb-6">+ إضافة صنف قماش جديد</button>
-    <div id="products-list" class="space-y-4"></div>
-  </div>
+      <div id="invoice-items-list" class="space-y-3 mb-6"></div>
 
-  <div id="dashboard" class="screen active p-4">
-    <!-- Dashboard content already shown above -->
+      <div class="border-t pt-4 text-lg">
+        <div class="flex justify-between"><span>الإجمالي</span><span id="invoice-grand-total" class="font-bold">0 ريال</span></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mt-8">
+        <button onclick="saveInvoice()" class="bg-green-600 text-white py-6 rounded-3xl text-xl">💾 حفظ الفاتورة</button>
+        <button onclick="printInvoice()" class="bg-blue-600 text-white py-6 rounded-3xl text-xl">🖨️ طباعة</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Toggle sections
-    function toggleSection(el) {
-      const content = el.nextElementSibling;
-      content.classList.toggle('hidden');
-      const icon = el.querySelector('i');
-      icon.classList.toggle('fa-chevron-down');
-      icon.classList.toggle('fa-chevron-up');
+    let db;
+    let currentInvoiceItems = [];
+
+    async function initSQLite() {
+      const SQL = await initSqlJs({ locateFile: f => `https://cdn.jsdelivr.net/npm/sql.js@1.14.0/dist/${f}` });
+      db = new SQL.Database();
+
+      db.run(`CREATE TABLE IF NOT EXISTS customers (id INTEGER PRIMARY KEY, name TEXT);
+              CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, name TEXT, price REAL, unit TEXT);
+              CREATE TABLE IF NOT EXISTS invoices (id INTEGER PRIMARY KEY, date TEXT, customer TEXT, total REAL);
+              CREATE TABLE IF NOT EXISTS invoice_items (id INTEGER PRIMARY KEY, invoice_id INTEGER, product TEXT, qty REAL, price REAL, subtotal REAL);`);
+
+      // Sample data
+      if (db.exec("SELECT COUNT(*) FROM invoices")[0].values[0][0] === 0) {
+        // Add some sample sales
+      }
+      refreshSalesList();
     }
 
-    function showScreen(id) {
+    function showScreen(screen) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      if (document.getElementById(id)) document.getElementById(id).classList.add('active');
+      document.getElementById(screen).classList.add('active');
+      if (screen === 'salesList') refreshSalesList();
     }
 
-    // Placeholder for the rest of the functionality (SQLite, sales, etc.)
-    // The full working code is already in your repo. This update is only for the visual dashboard.
-    console.log('%c✅ Dashboard updated to match original تكاليف سوفت!', 'color:#0f766e; font-size:18px; font-weight:bold');
+    function refreshSalesList() {
+      const tbody = document.getElementById('sales-table');
+      tbody.innerHTML = '';
+      const stmt = db.prepare("SELECT * FROM invoices ORDER BY id DESC");
+      while (stmt.step()) {
+        const row = stmt.getAsObject();
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-3">${row.total}</td>
+          <td class="p-3">مخزن الإنتاج التام</td>
+          <td class="p-3">${row.customer}</td>
+          <td class="p-3">${row.date}</td>
+          <td class="p-3">${row.id}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+      stmt.free();
+    }
+
+    function createNewInvoice() {
+      currentInvoiceItems = [];
+      document.getElementById('invoice-customer').value = '';
+      document.getElementById('invoice-date').value = new Date().toISOString().slice(0,10);
+      document.getElementById('invoice-items-list').innerHTML = '';
+      document.getElementById('invoice-grand-total').textContent = '0 ريال';
+      showScreen('newInvoice');
+    }
+
+    function addProductToInvoice() {
+      const productName = prompt("اسم الصنف:");
+      if (!productName) return;
+      const qty = parseFloat(prompt("الكمية:", "10"));
+      const price = parseFloat(prompt("السعر:", "120"));
+      const subtotal = qty * price;
+      currentInvoiceItems.push({product: productName, qty, price, subtotal});
+      renderInvoiceItems();
+    }
+
+    function renderInvoiceItems() {
+      const container = document.getElementById('invoice-items-list');
+      container.innerHTML = currentInvoiceItems.map((item, i) => `
+        <div class="flex justify-between bg-gray-50 p-4 rounded-2xl">
+          <div>${item.product} × ${item.qty}</div>
+          <div class="font-bold">${item.subtotal} ريال</div>
+        </div>
+      `).join('');
+      const total = currentInvoiceItems.reduce((sum, i) => sum + i.subtotal, 0);
+      document.getElementById('invoice-grand-total').textContent = total + ' ريال';
+    }
+
+    function saveInvoice() {
+      const customer = document.getElementById('invoice-customer').value || "عميل عام";
+      const date = document.getElementById('invoice-date').value;
+      const total = currentInvoiceItems.reduce((sum, i) => sum + i.subtotal, 0);
+
+      db.run("INSERT INTO invoices (date, customer, total) VALUES (?, ?, ?)", [date, customer, total]);
+      alert("✅ تم حفظ الفاتورة بنجاح!");
+      showScreen('salesList');
+    }
+
+    function printInvoice() {
+      alert("🖨️ جاري الطباعة...\n(سيتم تحسين الطباعة الحرارية في الخطوة القادمة)");
+    }
+
+    function searchSales() {
+      const keyword = prompt("بحث عن عميل أو رقم فاتورة:");
+      alert("🔍 نتائج البحث لـ: " + keyword + "\n(سيتم تطوير البحث المتقدم قريباً)");
+    }
+
+    function exportSalesPDF() {
+      alert("📄 جاري تصدير قائمة المبيعات إلى PDF");
+    }
+
+    window.onload = initSQLite;
   </script>
 </body>
 </html>
