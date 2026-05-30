@@ -62,11 +62,13 @@ function renderProducts() {
   const stmt = db.prepare("SELECT * FROM products ORDER BY name");
   while (stmt.step()) {
     const p = stmt.getAsObject();
+    const categoryName = getCategoryName(p.category_id);
     const div = document.createElement('div');
     div.className = "bg-white p-5 rounded-3xl shadow flex justify-between items-center";
     div.innerHTML = `
       <div>
         <div class="font-bold">${p.name}</div>
+        <div class="text-sm text-gray-600">${categoryName}</div>
         <div class="text-sm">تكلفة: ${p.cost} | بيع: ${p.price} | مخزون: ${p.stock} ${p.unit}</div>
       </div>
       <button onclick="editProduct(${p.id})" class="text-teal-600">تعديل</button>`;
@@ -79,25 +81,98 @@ function addNewProduct() {
   const name = prompt("اسم الصنف:");
   if (!name) return;
 
+  // Get categories for selection
+  const categories = getAllCategories();
+  let categoryId = null;
+
+  if (categories.length > 0) {
+    let msg = "اختر فئة:\n\n";
+    categories.forEach((cat, index) => {
+      msg += `${index + 1}. ${cat.name}\n`;
+    });
+    msg += `${categories.length + 1}. فئة جديدة\n`;
+    msg += `0. بدون فئة`;
+
+    const choice = parseInt(prompt(msg));
+
+    if (choice === categories.length + 1) {
+      addCategory();
+      return addNewProduct(); // recursive to refresh
+    } else if (choice > 0 && choice <= categories.length) {
+      categoryId = categories[choice - 1].id;
+    }
+  } else {
+    if (confirm("هل تريد إضافة فئة جديدة؟")) {
+      addCategory();
+      return addNewProduct();
+    }
+  }
+
   const cost = parseFloat(prompt("سعر التكلفة:", "80"));
   const price = parseFloat(prompt("سعر البيع:", "120"));
   const stock = parseFloat(prompt("المخزون الأولي:", "50"));
   const minStock = parseFloat(prompt("حد التنبيه:", "10"));
   const unit = prompt("الوحدة:", "متر");
 
-  db.run("INSERT INTO products (name, cost, price, stock, minStock, unit) VALUES (?,?,?,?,?,?)", [name, cost, price, stock, minStock, unit]);
+  db.run("INSERT INTO products (name, cost, price, stock, minStock, unit, category_id) VALUES (?,?,?,?,?,?,?)", [name, cost, price, stock, minStock, unit, categoryId]);
   saveDB();
   renderProducts();
   renderDashboard();
+  alert("✅ تم إضافة الصنف بنجاح");
 }
 
 function editProduct(id) {
-  const stock = prompt("المخزون الجديد:");
-  if (stock === null) return;
-  db.run("UPDATE products SET stock = ? WHERE id = ?", [parseFloat(stock), id]);
+  const stmt = db.prepare("SELECT * FROM products WHERE id = ?");
+  stmt.bind([id]);
+  if (!stmt.step()) {
+    stmt.free();
+    return alert("الصنف غير موجود");
+  }
+  const p = stmt.getAsObject();
+  stmt.free();
+
+  const name = prompt("اسم الصنف:", p.name);
+  if (name === null) return;
+
+  const categories = getAllCategories();
+  let categoryId = p.category_id;
+
+  if (categories.length > 0) {
+    let msg = "اختر فئة (الحالية: " + getCategoryName(p.category_id) + "):\n\n";
+    categories.forEach((cat, index) => {
+      msg += `${index + 1}. ${cat.name}\n`;
+    });
+    msg += `${categories.length + 1}. فئة جديدة\n`;
+    msg += `0. بدون فئة`;
+
+    const choice = parseInt(prompt(msg));
+    if (choice === categories.length + 1) {
+      addCategory();
+      return editProduct(id); // retry
+    } else if (choice > 0 && choice <= categories.length) {
+      categoryId = categories[choice - 1].id;
+    } else if (choice === 0) {
+      categoryId = null;
+    }
+  }
+
+  const cost = parseFloat(prompt("سعر التكلفة:", p.cost));
+  const price = parseFloat(prompt("سعر البيع:", p.price));
+  const stock = parseFloat(prompt("المخزون:", p.stock));
+  const minStock = parseFloat(prompt("حد التنبيه:", p.minStock));
+  const unit = prompt("الوحدة:", p.unit);
+
+  if (isNaN(cost) || isNaN(price) || isNaN(stock) || isNaN(minStock)) {
+    return alert("الرجاء إدخال أرقام صحيحة");
+  }
+
+  db.run("UPDATE products SET name=?, cost=?, price=?, stock=?, minStock=?, unit=?, category_id=? WHERE id=?", 
+    [name, cost, price, stock, minStock, unit, categoryId, id]);
+
   saveDB();
   renderProducts();
   renderDashboard();
+  alert("✅ تم تعديل الصنف بنجاح");
 }
 
 /* ==================== CATEGORIES ==================== */
